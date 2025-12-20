@@ -1,22 +1,21 @@
-# CarthaPirates
+# CartoPirates
 
-CarthaPirates est une application utilisée dans le cadre des cours d'Algorithmie et de Programmation assurés au sein du Master 2 Carthagéo :
+CartoPirates est une application utilisée dans le cadre de cours d'Algorithmie et de Programmation assurés au sein des établissements :
 
-* Université Panthéon-Sorbonne (Paris 1)
-* Université de Paris Cité (Paris 7)
-* École Nationale des Sciences Géographiques (ENSG)
+* Université Paris 1 Panthéon-Sorbonne
+* Géodata Paris
 
 ![](carte_interactive.png "Carte interactive")
 
 ## Vous souhaitez utiliser l'application ?
 
-L'API de CarthaPirates n'est pas sécurisée.
+L'API de CartoPirates n'est pas sécurisée.
 
 L'accès à son API est ouvert à tous (sous réserve que l'application soit actuellement démarrée).
 
-D'ailleurs, vous pouvez vérifier en temps réel l'état de l'application (et de son API) en consultant [status.carthapirates.fr](https://status.carthapirates.fr).
+D'ailleurs, vous pouvez vérifier en temps réel l'état de l'application (et de son API) en consultant [status.cartopirates.fr](https://status.cartopirates.fr).
 
-Pour en savoir plus sur comment utiliser l'API de CarthaPirates, consultez le README du dossier [usages](./usages)
+Pour en savoir plus sur comment utiliser l'API de CartoPirates, consultez le README du dossier [usages](./usages)
 
 ## Vous administrez l'application ?
 
@@ -42,8 +41,8 @@ Puis, démarrez l'application avec la commande `make start` (ou `make watch` pou
 
 Les services suivants sont alors accessibles :
 
-* [carthapirates.fr](https://carthapirates.fr/) : service *front*
-* [carthapirates.fr/api](https://carthapirates.fr/api/documentation) : service *api*
+* [cartopirates.fr](https://cartopirates.fr/) : service *front*
+* [cartopirates.fr/api](https://cartopirates.fr/api/documentation) : service *api*
 
 L'application est hébergée en France ([ScaleWay](https://www.scaleway.com/fr/)).
 

@@ -10,24 +10,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-carthapirates-db:
+  build-cartopirates-db:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Build de l'image carthapirates-db
-      run: docker build ./db --tag carthapirates-db:$(date +%s)
-  build-carthapirates-api:
+    - name: Build de l'image cartopirates-db
+      run: docker build ./db --tag cartopirates-db:$(date +%s)
+  build-cartopirates-api:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Build de l'image carthapirates-api
-      run: docker build ./api --tag carthapirates-api:$(date +%s)
-  build-carthapirates-front:
+    - name: Build de l'image cartopirates-api
+      run: docker build ./api --tag cartopirates-api:$(date +%s)
+  build-cartopirates-front:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Build de l'image carthapirates-front
-      run: docker build ./front --tag carthapirates-front:$(date +%s)
+    - name: Build de l'image cartopirates-front
+      run: docker build ./front --tag cartopirates-front:$(date +%s)
   docker-compose-up:
     runs-on: ubuntu-latest
     steps:

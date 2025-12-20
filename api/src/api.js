@@ -14,13 +14,13 @@ const api = express()
 const swaggerJSDocOptions = {
 	definition: {
 		info: {
-			title: 'API de CarthaPirates',
+			title: 'API de CartoPirates',
 			description: `Documentation des services de l'API`,
 			version: '1.0.0'
 		},
 		servers: [
 			{ url: "http://localhost:9001", description: "Environnement de développement" },
-			{ url: "https://carthapirates.fr/api", description: "Environnement de production" }
+			{ url: "https://cartopirates.fr/api", description: "Environnement de production" }
 		]
 	},
 	apis: ['./src/api.js'],

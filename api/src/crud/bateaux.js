@@ -4,7 +4,7 @@ const { getFlotte } = require('./flottes')
 
 // DATABASE
 
-const sequelize = new Sequelize('carthapirates', 'carthapirates', 'carthapirates', { host: 'db', port: 5432, dialect: 'postgres' })
+const sequelize = new Sequelize('cartopirates', 'cartopirates', 'cartopirates', { host: 'db', port: 5432, dialect: 'postgres' })
 
 // MODEL
 

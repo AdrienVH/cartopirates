@@ -1,6 +1,6 @@
-const isProd = window.location.hostname == 'carthapirates.fr' ? true : false
+const isProd = window.location.hostname == 'cartopirates.fr' ? true : false
 
-const API_BASE_URL = isProd ? 'https://carthapirates.fr/api' : 'http://localhost:9001'
+const API_BASE_URL = isProd ? 'https://cartopirates.fr/api' : 'http://localhost:9001'
 
 if (isProd) {
 	$('#ribbon').remove()

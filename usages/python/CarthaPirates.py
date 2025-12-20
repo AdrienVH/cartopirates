@@ -1,7 +1,7 @@
 import os
 import requests
 
-class CarthaPirates(object):
+class CartoPirates(object):
 
   def __init__(self, idBateau):
     self.monBateau = idBateau
@@ -13,7 +13,7 @@ class CarthaPirates(object):
     if isDev:
       self.url = "http://localhost:9001"
     else:
-      self.url = "https://carthapirates.fr/api"
+      self.url = "https://cartopirates.fr/api"
 
   def listerTousLesPorts(self):
     url = self.url + "/ports"

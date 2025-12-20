@@ -2,7 +2,7 @@
 
 ## Vous êtes enseignant(e) ?
 
-Rendez-vous sur [carthapirates.fr/api/documentation/](https://carthapirates.fr/api/documentation/).
+Rendez-vous sur [cartopirates.fr/api/documentation/](https://cartopirates.fr/api/documentation/).
 
 Créez une flotte pour votre groupe à l'aide du service `POST /flotte`, en indiquant le nom de votre flotte.
 
@@ -20,7 +20,7 @@ Et, si vraiment le coeur vous en dit, vous pouvez [me payer un thé](https://www
 
 Récupérez, auprès de votre enseignant(e), le nom de la flotte créée pour votre groupe.
 
-Rendez-vous sur [carthapirates.fr/api/documentation/](https://carthapirates.fr/api/documentation/).
+Rendez-vous sur [cartopirates.fr/api/documentation/](https://cartopirates.fr/api/documentation/).
 
 Vérifiez l'existence de cette flotte à l'aide du service `GET /flotte/{nom}`.
 
@@ -30,18 +30,18 @@ Enfin, créez votre bateau à l'aide du service `POST /bateaux`, en indiquant le
 
 # Pour continuer...
 
-Maintenant que vous avez créé votre bateau, il vous est possible de le faire interagir avec [la carte](https://carthapirates.fr/), toujours via l'API. La consommation des différents services offerts par l'API peut se faire de plusieurs manières différentes :
+Maintenant que vous avez créé votre bateau, il vous est possible de le faire interagir avec [la carte](https://cartopirates.fr/), toujours via l'API. La consommation des différents services offerts par l'API peut se faire de plusieurs manières différentes :
 
 ## En utilisant un client existant
 
 Vous pouvez continuer à utiliser les services de l'API depuis sa documentation (qui fait office de client) :
-[carthapirates.fr/api/documentation/](https://carthapirates.fr/api/documentation/)
+[cartopirates.fr/api/documentation/](https://cartopirates.fr/api/documentation/)
 
 Mais vous pouvez aussi utiliser n'importe quel client capable de faire des appels à une API, comme [Postman](https://www.postman.com/) ou cURL (sur Linux) :
 
-```curl -s https://carthapirates.fr/api/bateaux | jq```
+```curl -s https://cartopirates.fr/api/bateaux | jq```
 
-```curl -s https://carthapirates.fr/api/ports | jq```
+```curl -s https://cartopirates.fr/api/ports | jq```
 
 ## En construisant votre propre client
 
