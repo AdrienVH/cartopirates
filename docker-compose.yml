@@ -6,9 +6,9 @@ services:
       - ingress
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.carthapirates.rule=Host(`carthapirates.fr`)"
-      - "traefik.http.routers.carthapirates.entrypoints=websecure"
-      - "traefik.http.routers.carthapirates.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.cartopirates.rule=Host(`cartopirates.fr`)"
+      - "traefik.http.routers.cartopirates.entrypoints=websecure"
+      - "traefik.http.routers.cartopirates.tls.certresolver=letsencrypt"
   api:
     build: ./api/
     networks:
@@ -16,11 +16,11 @@ services:
       - default
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.carthapirates_api.rule=Host(`carthapirates.fr`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.carthapirates_api.entrypoints=websecure"
-      - "traefik.http.routers.carthapirates_api.tls.certresolver=letsencrypt"
-      - "traefik.http.middlewares.carthapirates_api-stripapiprefix.stripprefix.prefixes=/api"
-      - "traefik.http.routers.carthapirates_api.middlewares=carthapirates_api-stripapiprefix@docker"
+      - "traefik.http.routers.cartopirates_api.rule=Host(`cartopirates.fr`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.cartopirates_api.entrypoints=websecure"
+      - "traefik.http.routers.cartopirates_api.tls.certresolver=letsencrypt"
+      - "traefik.http.middlewares.cartopirates_api-stripapiprefix.stripprefix.prefixes=/api"
+      - "traefik.http.routers.cartopirates_api.middlewares=cartopirates_api-stripapiprefix@docker"
     environment:
       - ENV_NAME=prod
   db:

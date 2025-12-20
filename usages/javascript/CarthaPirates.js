@@ -1,4 +1,4 @@
-class CarthaPirates {
+class CartoPirates {
     
     constructor(idBateau) {
         this.monBateau = idBateau
@@ -11,7 +11,7 @@ class CarthaPirates {
         if (isDev) {
             this.url = 'http://localhost:9001'
         } else {
-            this.url = 'https://carthapirates.fr/api'
+            this.url = 'https://cartopirates.fr/api'
         }
     }
 

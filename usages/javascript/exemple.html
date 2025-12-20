@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarthaPirates</title>
+    <title>CartoPirates</title>
     <style>
         body {
             margin:0 auto;
@@ -42,25 +42,25 @@
         <div id="results"></div>
     </div>
     <!-- JAVASCRIPT -->
-    <script src="CarthaPirates.js"></script>
+    <script src="CartoPirates.js"></script>
     <script>
-        const carthapirates = new CarthaPirates(0) // Indiquez le numéro du bateau
+        const cartopirates = new CartoPirates(0) // Indiquez le numéro du bateau
         
         document.querySelector('#button1').addEventListener('click', function(){
-            const ports = carthapirates.listerTousLesPorts().then(ports => {
+            const ports = cartopirates.listerTousLesPorts().then(ports => {
                 const content = ports.map(p => `Port n°${p.id} : ${p.nom}`).join('<br />')
                 document.querySelector('#results').innerHTML = content
             })
         })
         
         document.querySelector('#button2').addEventListener('click', function(){
-            carthapirates.deplacerMonBateauVersCoords([2, 48]).then(() => {
+            cartopirates.deplacerMonBateauVersCoords([2, 48]).then(() => {
                 document.querySelector('#results').innerHTML = 'Le bateau a été déplacé'
             })
         })
         
         document.querySelector('#button3').addEventListener('click', function(){
-            carthapirates.rentrerMonBateau().then(() => {
+            cartopirates.rentrerMonBateau().then(() => {
                 document.querySelector('#results').innerHTML = 'Le bateau a été rentré'
             })
         })
