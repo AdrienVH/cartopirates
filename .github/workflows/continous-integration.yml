@@ -33,4 +33,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Lancement de la composition
-      run: docker-compose -f docker-compose.dev.yml up -d
+      run: docker compose -f docker-compose.dev.yml up -d
