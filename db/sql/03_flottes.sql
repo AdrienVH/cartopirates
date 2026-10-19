@@ -4,4 +4,4 @@ CREATE TABLE flottes (
     nom text CONSTRAINT pkey_flottes_nom PRIMARY KEY
 );
 
-INSERT INTO flottes VALUES (DEFAULT, 'm1geomatique2026');
+INSERT INTO flottes VALUES (DEFAULT, 'm1geomatique2027');

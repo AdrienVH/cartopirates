@@ -9,12 +9,13 @@ CREATE TABLE bateaux (
 );
 
 -- Enseignants
-INSERT INTO bateaux VALUES (1, 'Los Profesores', 'm1geomatique2026', NULL);
+INSERT INTO bateaux VALUES (1, 'Los Profesores', 'm1geomatique2027', NULL);
 
 -- Etudiants
-INSERT INTO bateaux VALUES (2, 'X', 'm1geomatique2026', NULL);
-INSERT INTO bateaux VALUES (3, 'X', 'm1geomatique2026', NULL);
-INSERT INTO bateaux VALUES (4, 'X', 'm1geomatique2026', NULL);
-INSERT INTO bateaux VALUES (5, 'X', 'm1geomatique2026', NULL);
-INSERT INTO bateaux VALUES (6, 'X', 'm1geomatique2026', NULL);
-INSERT INTO bateaux VALUES (7, 'X', 'm1geomatique2026', NULL);
+INSERT INTO bateaux VALUES (2, 'X', 'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (3, 'X', 'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (4, 'X', 'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (5, 'X', 'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (6, 'X', 'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (7, 'X', 'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (8, 'X', 'm1geomatique2027', NULL);
