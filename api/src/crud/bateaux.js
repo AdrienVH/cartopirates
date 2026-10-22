@@ -9,7 +9,7 @@ const sequelize = new Sequelize('cartopirates', 'cartopirates', 'cartopirates', 
 // MODEL
 
 const Bateau = sequelize.define('Bateau', {
-	id: { type: DataTypes.INTEGER, allowNull:false, primaryKey: true },
+	id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
 	nom: { type: DataTypes.STRING, allowNull: false },
 	nearestNode: { type: DataTypes.INTEGER, allowNull: true, field: 'nearest_node' },
 	geom: { type: DataTypes.GEOMETRY }
@@ -21,12 +21,17 @@ const Bateau = sequelize.define('Bateau', {
 // QUERIES
 
 async function getBateaux () {
-	const bateaux = await Bateau.findAll()
+	const bateaux = await Bateau.findAll({
+		order: [['id', 'ASC']]
+	})
 	return bateaux.map(function(bateau){ return bateau.toJSON() })
 }
 
 async function getBateauxFlotte (nomFlotte) {
-	const bateaux = await Bateau.findAll({ where: {'nom_flotte': nomFlotte }})
+	const bateaux = await Bateau.findAll({
+		where: {'nom_flotte': nomFlotte },
+		order: [['id', 'ASC']]
+	})
 	return bateaux
 }
 

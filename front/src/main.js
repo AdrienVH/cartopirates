@@ -4,16 +4,15 @@ const API_BASE_URL = isProd ? 'https://cartopirates.fr/api' : 'http://localhost:
 
 if (isProd) {
 	$('#ribbon').remove()
+	$("#choixPorts").hide()
 } else {
 	$('#ribbon').show()
 }
 
-let focusBateau = false
-let idBateau = null
+let idBateauFocus = null
 const url = new URLSearchParams(window.location.search)
 if (url.get('bateau') && !isNaN(parseInt(url.get('bateau')))) {
-	focusBateau = true
-	idBateau = parseInt(url.get('bateau'))
+	idBateauFocus = parseInt(url.get('bateau'))
 }
 
 // MAP
@@ -31,14 +30,15 @@ const mapbox = new ol.layer.Tile({
 function getPortsStyle(f){
 	return new ol.style.Style({
 		image: new ol.style.RegularShape({
-			fill: new ol.style.Fill({color: "#405a82"}),
-			points: 4,
-			radius: 12
+			fill: new ol.style.Fill({color: "#21395c"}),
+			points: 6,
+			radius: 13
 		}),
 		text: new ol.style.Text({
+			offsetX: 0.5,
 			offsetY: 1,
 			text: f.getId().toString(),
-			font: 'bold 9px sans-serif',
+			font: 'bold 11px sans-serif',
 			fill: new ol.style.Fill({color: 'white'})
 		})
 	})
@@ -57,13 +57,13 @@ function getBateauxStyle(f){
 	return new ol.style.Style({
 		image: new ol.style.Icon({
 			src: f.getId() == 0 ? 'bateau.png' : 'bateau.png',
-			opacity: focusBateau && f.getId() != idBateau ? 0.5 : 1
+			opacity: idBateauFocus && f.getId() != idBateauFocus ? 0.5 : 1
 		}),
 		text: new ol.style.Text({
 			textAlign: 'left',
 			offsetX: 20,
 			offsetY: 6,
-			text: focusBateau && f.getId() != idBateau ? "" : f.get("nom"),
+			text: idBateauFocus && f.getId() != idBateauFocus ? "" : f.get("nom"),
 			font: "bold 30px 'Ms Madi'",
 			fill: new ol.style.Fill({ color: 'dimgrey' }),
 			stroke: new ol.style.Stroke({ color: 'white', width: 3 }),
@@ -81,13 +81,13 @@ const bateaux = new ol.layer.Vector({
 /***** TRAJETS */
 
 function getTrajetsStyle(f){
-	let opacity = f.get('ordre') / f.get('ordreMax')
+	const opacity = f.get('ordre') / f.get('ordreMax')
 	const orange = `rgba(255, 165, 0, ${opacity})`
 	const gris = '#aaaaaa'
 	return new ol.style.Style({
 		stroke: new ol.style.Stroke({
-			color: focusBateau && f.get('idBateau') != idBateau ? gris : orange,
-			width: focusBateau && f.get('idBateau') != idBateau ? 1 : 3
+			color: idBateauFocus && f.get('idBateau') != idBateauFocus ? gris : orange,
+			width: idBateauFocus && f.get('idBateau') != idBateauFocus ? 1 : 3
 		})
 	})
 }
@@ -136,7 +136,7 @@ const map = new ol.Map({
 	target: 'map',
 	view: new ol.View({
 		center: ol.proj.transform([6.0, 40.0], 'EPSG:4326', 'EPSG:3857'),
-		minZoom: 5,
+		minZoom: 6,
 		maxZoom: 9
 	}),
 	controls : ol.control.defaults({
@@ -145,19 +145,28 @@ const map = new ol.Map({
 	}).extend([])
 })
 
-map.on('singleclick', function (evt) {
-	const xy = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326').map(c => c.toFixed(6)).join(",")
-	$('#xy').html(xy)
-	$('#xy').show()
-	const elm = document.getElementById("xy")
-	const selection = window.getSelection()
-    const range = document.createRange()
-    range.selectNodeContents(elm)
-    selection.removeAllRanges()
-    selection.addRange(range)
-	document.execCommand("Copy")
-	selection.removeAllRanges()
-	$('#xy').hide()
+/***** MENU CONTEXTUEL (CLIC DROIT) */
+
+map.on('contextmenu', function (evt) {
+	const xy = ol.proj.toLonLat(evt.coordinate).map(c => c.toFixed(6))
+	evt.preventDefault()
+  	// Afficher le menu contextuel (à la position du curseur)
+	$('#menu-contextuel div').remove()
+	$('<div class="menu-item"></div>')
+		.appendTo('#menu-contextuel')
+		.text('Copier "' + xy.join(',') + '"')
+		.click(async function (){ await navigator.clipboard.writeText(xy.join(',')) })
+	if (idBateauFocus) {
+		$('<div class="menu-item"></div>')
+			.appendTo('#menu-contextuel')
+			.text(`Déplacer mon bateau ${idBateauFocus} à cet endroit`)
+			.click(function (){ envoyerDeplacementBateau(idBateauFocus, xy) })
+	}
+	$('#menu-contextuel').css({ left: evt.originalEvent.pageX, top: evt.originalEvent.pageY }).show()
+})
+
+$(document).on('click', function () {
+	$('#menu-contextuel').hide()
 })
 
 /************ GET PORTS */
@@ -171,7 +180,7 @@ function getPorts(){
 		map.getView().fit(portsSource.getExtent(), { padding: [100, 100, 100, 100] })
 	})
 	request.fail(function(jqXHR, textStatus) {
-		console.log("FAIL", jqXHR, textStatus)
+		console.error("FAIL", jqXHR, textStatus)
 	})
 }
 
@@ -195,7 +204,7 @@ function getBateaux(){
 		bateaux.forEach(bateau => addBateauToMap(bateau))
 	})
 	request.fail(function(jqXHR, textStatus) {
-		console.log("FAIL", jqXHR, textStatus)
+		console.error("FAIL", jqXHR, textStatus)
 	})
 }
 
@@ -214,6 +223,13 @@ function moveBateau(bateau) {
 	feature.setGeometry(new ol.geom.Point(ol.proj.transform(bateau.geom.coordinates, 'EPSG:4326','EPSG:3857')))
 }
 
+function envoyerDeplacementBateau(idBateau, coords) {
+	const request = $.ajax({ url: API_BASE_URL + "/bateau/" + idBateau + "/deplacer?" + $.param({ longitude: coords[0], latitude: coords[1] }), method: "PUT" })
+	request.fail(function(jqXHR, textStatus) {
+		console.error("FAIL", jqXHR, textStatus)
+	})
+}
+
 getBateaux()
 
 /************ GET TRAJETS */
@@ -225,7 +241,7 @@ function getTrajets(){
 		trajets.forEach(trajet => addTrajetToMap(trajet, ordreMax))
 	})
 	request.fail(function(jqXHR, textStatus) {
-		console.log("FAIL", jqXHR, textStatus)
+		console.error("FAIL", jqXHR, textStatus)
 	})
 }
 
@@ -260,12 +276,11 @@ function getRoutes(){
 		addRoutesToMap(routes)
 	})
 	request.fail(function(jqXHR, textStatus) {
-		console.log("FAIL", jqXHR, textStatus)
+		console.error("FAIL", jqXHR, textStatus)
 	})
 }
 
 function addRoutesToMap(routes) {
-	console.log(routes.length)
 	for (const route of routes) {
 		const feature = new ol.Feature({ })
 		feature.setGeometry(new ol.format.GeoJSON().readGeometry(route.geom, { featureProjection: "EPSG:3857" }))
@@ -275,25 +290,25 @@ function addRoutesToMap(routes) {
 
 /************ GET TOURNEE */
 
-function getTournee(idPortDepart, idPortArrivee){
+function getTournee(idPortDepart, idPortArrivee) {
 	const start = new Date().getTime()
 	const request = $.ajax({ url: API_BASE_URL + "/tournee/" + idPortDepart + "/" + idPortArrivee, method: "GET" })
 	request.done(function(routes) {
 		addTourneeToMap(routes, start, false)
 	})
 	request.fail(function(jqXHR, textStatus) {
-		console.log("FAIL", jqXHR, textStatus)
+		console.error("FAIL", jqXHR, textStatus)
 	})
 }
 
-function getTourneeFixe(idsPorts){
+function getTourneeFixe(idsPorts) {
 	const start = new Date().getTime()
 	const request = $.ajax({ url: API_BASE_URL + "/tournee/" + idsPorts, method: "GET" })
 	request.done(function(routes) {
 		addTourneeToMap(routes, start, true)
 	})
 	request.fail(function(jqXHR, textStatus) {
-		console.log("FAIL", jqXHR, textStatus)
+		console.error("FAIL", jqXHR, textStatus)
 	})
 }
 
@@ -371,28 +386,28 @@ $("#tournee ul.sortable").sortable({
 const eventSource = new EventSource(API_BASE_URL + '/stream')
 
 eventSource.onopen = () => {
-	console.log("CONNECTED")
+	console.info("CONNECTED")
 }
 
 eventSource.onerror = () => {
 	switch (eventSource.readyState) {
 		case EventSource.OPENED:
-			console.log("OPENED")
+			console.info("OPENED")
 			break
 		case EventSource.CONNECTING:
-			console.log("CONNECTING")
+			console.info("CONNECTING")
 			break
 		case EventSource.CLOSED:
-			console.log("CLOSED")
+			console.info("CLOSED")
 			break
 		default:
-			console.log("UNKNOWN EVENT")
+			console.info("UNKNOWN EVENT")
 	}
 }
 
 eventSource.onmessage = event => {
 	const data = JSON.parse(event.data)
-	console.log("EVENT " + data.type, data.content)
+	console.info("EVENT " + data.type, data.content)
 	const content = data.content
 	switch (data.type) {
 		case 'deplacerBateau':
@@ -449,7 +464,7 @@ eventSource.onmessage = event => {
 			}
 			break
 		default:
-			console.log("UNHANDLED EVENT")
+			console.error("UNHANDLED EVENT")
 			break
 	}
 }
@@ -461,5 +476,3 @@ function toaster (texte, duree) {
 		div.animate({ width: '100%' }, duree, 'linear', function() { message.fadeOut() })
 	})
 }
-
-//eventSource.close()
