@@ -56,7 +56,7 @@ const ports = new ol.layer.Vector({
 function getBateauxStyle(f){
 	return new ol.style.Style({
 		image: new ol.style.Icon({
-			src: f.getId() == 0 ? 'bateau.png' : 'bateau.png',
+			src: 'bateau.png',
 			opacity: idBateauFocus && f.getId() != idBateauFocus ? 0.5 : 1
 		}),
 		text: new ol.style.Text({
@@ -103,7 +103,7 @@ const trajets = new ol.layer.Vector({
 
 function getRoutesStyle(){
 	return new ol.style.Style({
-		stroke: new ol.style.Stroke({ color: '#aaaaaa', width: 1 })
+		stroke: new ol.style.Stroke({ color: '#93addd', width: 0.5 })
 	})
 }
 
@@ -111,6 +111,9 @@ const routesSource = new ol.source.Vector({projection : 'EPSG:3857'})
 const routes = new ol.layer.Vector({
 	source: routesSource,
 	style: getRoutesStyle,
+	visible: false,
+	minZoom: 8,
+	maxZoom: 9,
 	name: "routes"
 })
 
@@ -126,6 +129,7 @@ const tourneesSource = new ol.source.Vector({projection : 'EPSG:3857'})
 const tournees = new ol.layer.Vector({
 	source: tourneesSource,
 	style: getTourneesStyle,
+	visible: false,
 	name: "tournees"
 })
 
@@ -134,15 +138,8 @@ const tournees = new ol.layer.Vector({
 const map = new ol.Map({
 	layers: [mapbox, routes, tournees, trajets, ports, bateaux],
 	target: 'map',
-	view: new ol.View({
-		center: ol.proj.transform([6.0, 40.0], 'EPSG:4326', 'EPSG:3857'),
-		minZoom: 6,
-		maxZoom: 9
-	}),
-	controls : ol.control.defaults({
-		attribution : false,
-		zoom : false
-	}).extend([])
+	view: new ol.View({ center: ol.proj.transform([6.0, 40.0], 'EPSG:4326', 'EPSG:3857'), minZoom: 5, maxZoom: 9 }),
+	controls : ol.control.defaults({ attribution : false, zoom : false }).extend([])
 })
 
 /***** MENU CONTEXTUEL (CLIC DROIT) */
@@ -152,15 +149,31 @@ map.on('contextmenu', function (evt) {
 	evt.preventDefault()
   	// Afficher le menu contextuel (à la position du curseur)
 	$('#menu-contextuel div').remove()
+	// Cacher les routes
+	if (routes.getVisible()) {
+		$('<div class="menu-item"></div>')
+			.appendTo('#menu-contextuel')
+			.text('Cacher les routes')
+			.click(async function (){ hideRoutes() })
+	}
+	// Copier XY
 	$('<div class="menu-item"></div>')
 		.appendTo('#menu-contextuel')
 		.text('Copier "' + xy.join(',') + '"')
 		.click(async function (){ await navigator.clipboard.writeText(xy.join(',')) })
+	// Déplacer le bateau
 	if (idBateauFocus) {
 		$('<div class="menu-item"></div>')
 			.appendTo('#menu-contextuel')
-			.text(`Déplacer mon bateau ${idBateauFocus} à cet endroit`)
-			.click(function (){ envoyerDeplacementBateau(idBateauFocus, xy) })
+			.text(`Déplacer le bateau n°${idBateauFocus} vers ${xy.join(',')}`)
+			.click(function (){ envoyerDeplacerBateau(idBateauFocus, xy) })
+		// Rentrer le bateau s'il est sorti
+		if (bateauxSource.getFeatureById(idBateauFocus).getGeometry() != null) {
+			$('<div class="menu-item"></div>')
+				.appendTo('#menu-contextuel')
+				.text(`Rentrer le bateau n°${idBateauFocus}`)
+				.click(function (){ envoyerRentrerBateau(idBateauFocus, xy) })
+		}
 	}
 	$('#menu-contextuel').css({ left: evt.originalEvent.pageX, top: evt.originalEvent.pageY }).show()
 })
@@ -223,8 +236,15 @@ function moveBateau(bateau) {
 	feature.setGeometry(new ol.geom.Point(ol.proj.transform(bateau.geom.coordinates, 'EPSG:4326','EPSG:3857')))
 }
 
-function envoyerDeplacementBateau(idBateau, coords) {
+function envoyerDeplacerBateau(idBateau, coords) {
 	const request = $.ajax({ url: API_BASE_URL + "/bateau/" + idBateau + "/deplacer?" + $.param({ longitude: coords[0], latitude: coords[1] }), method: "PUT" })
+	request.fail(function(jqXHR, textStatus) {
+		console.error("FAIL", jqXHR, textStatus)
+	})
+}
+
+function envoyerRentrerBateau(idBateau) {
+	const request = $.ajax({ url: API_BASE_URL + "/bateau/" + idBateau + "/rentrer", method: "PUT" })
 	request.fail(function(jqXHR, textStatus) {
 		console.error("FAIL", jqXHR, textStatus)
 	})
@@ -270,14 +290,22 @@ getTrajets()
 
 /************ GET ROUTES */
 
-function getRoutes(){
+function getRoutes() {
+	const zoom = routes.getMaxZoom()
+	routes.setVisible(true)
 	const request = $.ajax({ url: API_BASE_URL + "/routes", method: "GET" })
 	request.done(function(routes) {
 		addRoutesToMap(routes)
+		map.getView().setZoom(zoom)
 	})
 	request.fail(function(jqXHR, textStatus) {
 		console.error("FAIL", jqXHR, textStatus)
 	})
+}
+
+function hideRoutes() {
+	routesSource.clear()
+	routes.setVisible(false)
 }
 
 function addRoutesToMap(routes) {
@@ -291,6 +319,7 @@ function addRoutesToMap(routes) {
 /************ GET TOURNEE */
 
 function getTournee(idPortDepart, idPortArrivee) {
+	tournees.setVisible(true)
 	const start = new Date().getTime()
 	const request = $.ajax({ url: API_BASE_URL + "/tournee/" + idPortDepart + "/" + idPortArrivee, method: "GET" })
 	request.done(function(routes) {
@@ -302,6 +331,7 @@ function getTournee(idPortDepart, idPortArrivee) {
 }
 
 function getTourneeFixe(idsPorts) {
+	tournees.setVisible(true)
 	const start = new Date().getTime()
 	const request = $.ajax({ url: API_BASE_URL + "/tournee/" + idsPorts, method: "GET" })
 	request.done(function(routes) {
