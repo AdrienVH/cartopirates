@@ -12,10 +12,10 @@ CREATE TABLE bateaux (
 INSERT INTO bateaux VALUES (DEFAULT, 'Los Profesores', 'm1geomatique2027', NULL);
 
 -- Etudiants
-INSERT INTO bateaux VALUES (DEFAULT, 'Bateau 2', 'm1geomatique2027', NULL);
-INSERT INTO bateaux VALUES (DEFAULT, 'Bateau 3', 'm1geomatique2027', NULL);
-INSERT INTO bateaux VALUES (DEFAULT, 'Bateau 4', 'm1geomatique2027', NULL);
-INSERT INTO bateaux VALUES (DEFAULT, 'Bateau 5', 'm1geomatique2027', NULL);
-INSERT INTO bateaux VALUES (DEFAULT, 'Bateau 6', 'm1geomatique2027', NULL);
-INSERT INTO bateaux VALUES (DEFAULT, 'Bateau 7', 'm1geomatique2027', NULL);
-INSERT INTO bateaux VALUES (DEFAULT, 'Bateau 8', 'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (DEFAULT, 'Zéphyr',    'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (DEFAULT, 'Arnaud',    'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (DEFAULT, 'Chrysalis', 'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (DEFAULT, 'Bateau 5',  'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (DEFAULT, 'Bateau 6',  'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (DEFAULT, 'Bateau 7',  'm1geomatique2027', NULL);
+INSERT INTO bateaux VALUES (DEFAULT, 'Bateau 8',  'm1geomatique2027', NULL);
