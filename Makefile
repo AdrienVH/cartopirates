@@ -11,6 +11,9 @@ watchDev:
 startDev:
 		docker compose -f docker-compose.dev.yml up --build -d
 
+startDevApi:
+		docker compose up --build -d --no-deps api
+
 clean:
 		docker-compose down --remove-orphans
 		docker image prune -f
