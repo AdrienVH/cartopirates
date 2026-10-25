@@ -80,16 +80,27 @@ const bateaux = new ol.layer.Vector({
 
 /***** TRAJETS */
 
-function getTrajetsStyle(f){
-	const opacity = f.get('ordre') / f.get('ordreMax')
-	const orange = `rgba(255, 165, 0, ${opacity})`
-	const gris = '#aaaaaa'
-	return new ol.style.Style({
-		stroke: new ol.style.Stroke({
-			color: idBateauFocus && f.get('idBateau') != idBateauFocus ? gris : orange,
-			width: idBateauFocus && f.get('idBateau') != idBateauFocus ? 1 : 3
-		})
-	})
+function getTrajetsStyle(f) {
+	const ordre = f.get('ordre')
+	const ordreMax = f.get('ordreMax')
+	const ratio = Math.max(0, Math.round(10 - ordreMax + ordre) / 10)
+	// Couleurs
+	const gris = `rgba(170, 170, 170, ${1 * ratio})`
+	const bleu = `rgba(112, 156, 179, ${1 * ratio})`
+	const blanc = `rgba(255, 255, 255, ${0.5 * ratio})`
+	// Taille
+	const tailleGris = 1
+	const tailleBleu = 3 * ratio
+	const tailleBlanc = 10 * ratio
+	// Focus demandé mais autre bateau à afficher
+	if (idBateauFocus && f.get('idBateau') != idBateauFocus) {
+		return new ol.style.Style({ stroke: new ol.style.Stroke({ color: gris, width: tailleGris }) })
+	} else {
+		return [
+			new ol.style.Style({ stroke: new ol.style.Stroke({ color: blanc, width: tailleBlanc, lineCap: 'butt' }) }),
+			new ol.style.Style({ stroke: new ol.style.Stroke({ color: bleu, width: tailleBleu, lineCap: 'butt' }) })
+		]
+	}
 }
 
 const trajetsSource = new ol.source.Vector({projection : 'EPSG:3857'})
@@ -356,7 +367,6 @@ function addTourneeToMap(routes, start, ajustement) {
 		}
 		const distance = Math.round(routes[i].distance / 1000)
 		const li = $(`<li data-port="${routes[i].id_port_dest[0]}">${routes[i].id_port_dest[0]}. ${getNomPort(routes[i].id_port_dest[0])} <span>${distance} kms</span></li>`).appendTo(liste)
-		// TODO survol
 	}
 	// Features
 	tourneesSource.clear()
