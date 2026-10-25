@@ -5,6 +5,7 @@ const { getTrajets, getTrajetsBateau, supprimerTrajets } = require('./crud/traje
 const { getFlotte, creerFlotte, supprimerFlotte } = require('./crud/flottes')
 const express = require('express')
 const cors = require('cors')
+const compression = require('compression')
 const SSE = require('express-sse')
 const swaggerUi = require('swagger-ui-express')
 const swaggerJSDoc = require('swagger-jsdoc')
@@ -30,6 +31,7 @@ const swaggerSpec = swaggerJSDoc(swaggerJSDocOptions)
 
 api.use(express.json())
 api.use(cors())
+api.use(compression())
 api.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 api.listen(8080, () => { console.log(`L'API REST est démarrée`) })
 
