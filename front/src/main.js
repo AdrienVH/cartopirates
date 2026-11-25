@@ -83,7 +83,7 @@ const bateaux = new ol.layer.Vector({
 function getTrajetsStyle(f) {
 	const ordre = f.get('ordre')
 	const ordreMax = f.get('ordreMax')
-	const ratio = Math.max(0, Math.round(10 - ordreMax + ordre) / 10)
+	const ratio = Math.max(0, Math.round(15 - ordreMax + ordre) / 15)
 	// Couleurs
 	const gris = `rgba(170, 170, 170, ${1 * ratio})`
 	const bleu = `rgba(112, 156, 179, ${1 * ratio})`
@@ -172,20 +172,34 @@ map.on('contextmenu', function (evt) {
 		.appendTo('#menu-contextuel')
 		.text('Copier "' + xy.join(',') + '"')
 		.click(async function (){ await navigator.clipboard.writeText(xy.join(',')) })
-	// Déplacer le bateau
 	if (idBateauFocus) {
-		$('<div class="menu-item"></div>')
-			.appendTo('#menu-contextuel')
-			.text(`Déplacer le bateau n°${idBateauFocus} vers ${xy.join(',')}`)
-			.click(function (){ envoyerDeplacerBateau(idBateauFocus, xy) })
 		// Rentrer le bateau s'il est sorti
 		if (bateauxSource.getFeatureById(idBateauFocus).getGeometry() != null) {
 			$('<div class="menu-item"></div>')
 				.appendTo('#menu-contextuel')
-				.text(`Rentrer le bateau n°${idBateauFocus}`)
+				.text(`Rentrer le bateau (${idBateauFocus})`)
 				.click(function (){ envoyerRentrerBateau(idBateauFocus, xy) })
 		}
+		// Déplacer le bateau
+		$('<div class="menu-item"></div>')
+			.appendTo('#menu-contextuel')
+			.text(`Déplacer le bateau (${idBateauFocus}) à ${xy.join(',')}`)
+			.click(function (){ envoyerDeplacerBateau(idBateauFocus, xy) })
+		// Ports proches
+		const request = $.ajax({ url: API_BASE_URL + "/ports/3/proches?" + $.param({ longitude: xy[0], latitude: xy[1] }), method: "GET" })
+		request.done(function(ports) {
+			ports.forEach(port => {
+				$('<div class="menu-item"></div>')
+					.appendTo('#menu-contextuel')
+					.text(`Déplacer le bateau (${idBateauFocus}) à ${port.nom} (${port.id})`)
+					.click(function (){ envoyerDeplacerBateau(idBateauFocus, port.geom.coordinates) })
+			})
+		})
+		request.fail(function(jqXHR, textStatus) {
+			console.error("FAIL", jqXHR, textStatus)
+		})
 	}
+	// Afficher le menu
 	$('#menu-contextuel').css({ left: evt.originalEvent.pageX, top: evt.originalEvent.pageY }).show()
 })
 
